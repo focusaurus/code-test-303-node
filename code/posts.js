@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const knex = require("./knex");
 const log = require("bole")(__filename);
 
+const parseJson = bodyParser.json();
+const POST_FIELDS = ["id", "title", "author", "content"];
+
 app.get("/", async (req, res) => {
   const rows = await knex
     .select()
@@ -11,12 +14,12 @@ app.get("/", async (req, res) => {
   res.send(rows);
 });
 
-app.post("/", bodyParser.json(), async (req, res) => {
+app.post("/", parseJson, async (req, res) => {
   const post = req.body;
   const rows = await knex
     .insert(post)
     .into("posts")
-    .returning(["id", "title", "author", "content"]);
+    .returning(POST_FIELDS);
   res.status(201);
   res.send(rows[0]);
 });
@@ -31,6 +34,15 @@ app.get("/:postId", async (req, res) => {
     res.send();
     return;
   }
+  res.send(rows[0]);
+});
+
+app.patch("/:postId", parseJson, async (req, res) => {
+  const post = req.body;
+  const rows = await knex("posts")
+    .update(post)
+    .where({ id: Number(req.params.postId) })
+    .returning(POST_FIELDS);
   res.send(rows[0]);
 });
 

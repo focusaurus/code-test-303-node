@@ -25,3 +25,4 @@
 
 - Input validation
 - Unit tests, especially for edge cases
+- Pagination for the get all posts route
