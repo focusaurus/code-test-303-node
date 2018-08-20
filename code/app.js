@@ -3,9 +3,6 @@ const express = require("express");
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.render("pages/home");
-});
-// app.use(require("./posts"));
+app.use("/api/v1/posts", require("./posts"));
 
 module.exports = app;
